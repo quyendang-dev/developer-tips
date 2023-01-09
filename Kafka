@@ -1,0 +1,24 @@
+-- Delete kafka topic (set retention to small milisecond, so broker can delete the data in topic)
+
+kafka-configs --zookeeper localhost:2181 \
+--entity-type topics \
+--entity-name sweep.settlement.scheduler \
+--alter --add-config retention.ms=100
+
+-- Verify if end offset = start offset
+
+kafka-run-class kafka.tools.GetOffsetShell \
+--broker-list localhost:9092 \
+--topic sweep.settlement.scheduler \
+--time -1
+
+kafka-run-class kafka.tools.GetOffsetShell \
+--broker-list localhost:9092 \
+--topic sweep.settlement.scheduler \
+--time -2
+
+-- After that set the retention time to original state (1 week = 604800000 ms)
+kafka-configs --zookeeper localhost:2181 \
+--entity-type topics \
+--entity-name sweep.settlement.scheduler \
+--alter --add-config retention.ms=604800000
