@@ -1,0 +1,12 @@
+1. If run consul in docker, jump into that container, then backup the data.
+consul snapshot save backup.snap
+
+2. Exit container environment, then copy data from container to your host to save the data
+sudo docker cp data_consul_1:/backup.snap /buckzyapp/data/consul-backup.snap
+
+3. When you want to backup your data
+3.1: Add the backup file into your consul container.
+docker cp /buckzyapp/data/consul-backup.snap data_consul_1:/backup.snap
+
+3.2: Go into that consul container to run restore command
+consul snapshot restore backup.snap
